@@ -411,6 +411,11 @@ wolfssl_connect_step1(struct Curl_easy *data, struct connectdata *conn,
   }
 #endif
 
+#ifdef HAVE_SSL_CTX_SET_POST_HANDSHAKE_AUTH
+    /* OpenSSL 1.1.1 requires clients to opt-in for PHA */
+  wolfSSL_CTX_allow_post_handshake_auth(backend->ctx);
+#endif
+
   /* give application a chance to interfere with SSL set up. */
   if(data->set.ssl.fsslctx) {
     CURLcode result = (*data->set.ssl.fsslctx)(data, backend->ctx,
